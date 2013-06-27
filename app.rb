@@ -34,7 +34,19 @@ class App < Sinatra::Base
   end
 
   get '/' do
-    mustache :index
+    erb :upload
+  end
+  
+  post '/' do
+    if params['upfile'].nil?
+      @text = "Please select a file!"
+    else
+      File.open('uploads/' + params['upfile'][:filename], "w") do |f|
+        f.write(params['upfile'][:tempfile].read)
+      end
+      @text = "Success!"
+    end
+    erb :result
   end
 
   run! if app_file == $0
