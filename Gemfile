@@ -9,7 +9,7 @@ gem 'sinatra-assetpack', require: 'sinatra/assetpack',
 gem 'mustache', require: 'mustache/sinatra'
 gem 'coffee-script'
 gem 'sass'
-
+gem "httpclient"
 group :test do
   gem 'minitest', require: 'minitest/autorun'
   gem 'minitest', require: 'minitest/pride'

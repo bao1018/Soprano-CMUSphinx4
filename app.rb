@@ -1,6 +1,8 @@
 require 'bundler/setup'
-Bundler.require
+require 'httpclient'
+require 'uri'
 
+Bundler.require
 class App < Sinatra::Base
 
   set :root, File.dirname(__FILE__)
@@ -36,13 +38,21 @@ class App < Sinatra::Base
   get '/' do
     erb :upload
   end
-  
+
   post '/' do
     if params['upfile'].nil?
       @text = "Please select a file!"
     else
       File.open('uploads/' + params['upfile'][:filename], "w") do |f|
         f.write(params['upfile'][:tempfile].read)
+      end
+      uri = URI.parse('http://spokentech.net/speechcloud/SpeechUploadServlet')
+      clnt = HTTPClient.new
+      File.open('uploads/' + params['upfile'][:filename]) do |file|
+        body = { 'lmFlag'=>'true', 'continuousFlag' => 'true', 'doEndpointing' => 'true' ,'CmnBatchFlag' => 'true', 'audio' => file  }
+        res = clnt.post(uri, body) do |chunk|
+          puts chunk
+        end
       end
       @text = "Success!"
     end
