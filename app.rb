@@ -48,6 +48,7 @@ class App < Sinatra::Base
       end
       uri = URI.parse('http://spokentech.net:8000/speechcloud/SpeechUploadServlet')
       clnt = HTTPClient.new
+      clnt.send_timeout = 10000
       File.open('uploads/' + params['upfile'][:filename]) do |file|
         body = { 'lmFlag'=>'true', 'continuousFlag' => 'true', 'doEndpointing' => 'true' ,'CmnBatchFlag' => 'true', 'audio' => file  }
         @text = ""
