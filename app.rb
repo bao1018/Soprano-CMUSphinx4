@@ -46,15 +46,16 @@ class App < Sinatra::Base
       File.open('uploads/' + params['upfile'][:filename], "w") do |f|
         f.write(params['upfile'][:tempfile].read)
       end
-      uri = URI.parse('http://spokentech.net/speechcloud/SpeechUploadServlet')
+      uri = URI.parse('http://spokentech.net:8000/speechcloud/SpeechUploadServlet')
       clnt = HTTPClient.new
       File.open('uploads/' + params['upfile'][:filename]) do |file|
         body = { 'lmFlag'=>'true', 'continuousFlag' => 'true', 'doEndpointing' => 'true' ,'CmnBatchFlag' => 'true', 'audio' => file  }
+        @text = ""
         res = clnt.post(uri, body) do |chunk|
-          puts chunk
+          @text << (chunk + ". ")
         end
       end
-      @text = "Success!"
+      
     end
     erb :result
   end
